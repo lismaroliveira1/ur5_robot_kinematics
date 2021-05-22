@@ -1,0 +1,29 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  basicTimeStep 16
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.017368148488455405 0.9930036313182771 0.11679955311043813 2.796023948366689
+  position 2.0241573065465883 1.396990998258447 -3.413446912585349
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 5 5
+}
+Desk {
+  translation 0 0 -0.93
+}
+UR5e {
+  translation 0 0.76 -1.09321e-08
+  controller "ur5_main_controller"
+}
+Table {
+  translation 0 0 0.3
+}
+Glass {
+  translation 0 0.71 -0.92
+}
