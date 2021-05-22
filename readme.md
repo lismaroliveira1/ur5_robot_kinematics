@@ -1,1 +1,1 @@
-# UR5 Robot Control Using Python and Webots simulator
+# UR5 Robot Control Using Python and Webots Simulator
