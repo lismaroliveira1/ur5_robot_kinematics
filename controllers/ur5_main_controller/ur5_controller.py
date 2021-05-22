@@ -41,8 +41,11 @@ class Ur5Controller(Robot):
         self.wrist_3_joint_sensor.enable(10)
 
     def forwardKinematic(self):
+        ur5Joints = self.ur5.updateJointsPositions(
+            self.shoulder_pan_joint_sensor.getValue(),
+            self.shoulder_lift_joint_sensor.getValue(),
+            self.elbow_joint_sensor.getValue(), 1, 1, 1)
 
-        ur5Joints = self.ur5.ur5JointToList()
         tMatrixlist = []
 
         for joint in ur5Joints:
@@ -73,5 +76,5 @@ class Ur5Controller(Robot):
 
     def run(self):
         while self.step(self.timeStep) != 10:
-            print(self.elbow_joint_sensor.getValue())
+            print(self.wrist_1_joint_sensor.getValue())
         print('stoped')
