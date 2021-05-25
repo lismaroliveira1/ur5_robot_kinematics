@@ -1,6 +1,7 @@
 import math
 import numpy as np
 from controller import Robot
+from time import sleep
 
 
 class Ur5Controller(Robot):
@@ -16,6 +17,8 @@ class Ur5Controller(Robot):
         self.wrist_1_joint = self.getDevice('wrist_1_joint')
         self.wrist_2_joint = self.getDevice('wrist_2_joint')
         self.wrist_3_joint = self.getDevice('wrist_3_joint')
+        self.gps = self.getDevice('gps')
+        self.gps.enable(10)
 
         self.elbow_joint_sensor = self.getDevice('elbow_joint_sensor')
         self.shoulder_lift_joint_sensor = self.getDevice(
@@ -39,12 +42,19 @@ class Ur5Controller(Robot):
         self.wrist_1_joint_sensor.enable(10)
         self.wrist_2_joint_sensor.enable(10)
         self.wrist_3_joint_sensor.enable(10)
+        self.step(20)
+        sleep(2)
+        print(self.gps.getValues())
 
     def forwardKinematic(self):
         ur5Joints = self.ur5.updateJointsPositions(
             self.shoulder_pan_joint_sensor.getValue(),
+            self.wrist_1_joint_sensor.getValue(),
+            self.elbow_joint_sensor.getValue(),
             self.shoulder_lift_joint_sensor.getValue(),
-            self.elbow_joint_sensor.getValue(), 1, 1, 1)
+            self.wrist_2_joint_sensor.getValue(),
+            self.wrist_3_joint_sensor.getValue(),
+        )
 
         tMatrixlist = []
 
@@ -65,16 +75,17 @@ class Ur5Controller(Robot):
         self.tMatrix_4_5 = tMatrixlist[4]
         self.tMatrix_5_6 = tMatrixlist[5]
 
-        self.tMatrix_0_6 = np.array(np.identity(4))
+        self.tMatrix_0_6 = tMatrixlist[0]
+        tMatrixlist.remove(tMatrixlist[0])
         for tMatrix in tMatrixlist:
             self.tMatrix_0_6 *= self.tMatrix_0_6.dot(tMatrix)
 
-    def inverseKinematic(self):
+        print(self.tMatrix_0_6)
 
-        print(self.tMatrix_0_6.dot(
-            [[0], [0], [-self.ur5.joint6.distance], [1]]))
+    def inverseKinematic(self):
+        pass
 
     def run(self):
         while self.step(self.timeStep) != 10:
-            print(self.wrist_1_joint_sensor.getValue())
+            print(self.shoulder_pan_joint_sensor.getValue())
         print('stoped')

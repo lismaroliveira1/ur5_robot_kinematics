@@ -4,8 +4,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.017368148488455405 0.9930036313182771 0.11679955311043813 2.796023948366689
-  position 2.0241573065465883 1.396990998258447 -3.413446912585349
+  orientation 0.13973416444818682 0.9482828325451711 0.2850158465525635 3.9907007411233026
+  position -4.365956925903198 4.674960830142783 -4.329856524873749
 }
 TexturedBackground {
 }
@@ -18,8 +18,22 @@ Desk {
   translation 0 0 -0.93
 }
 UR5e {
+  hidden rotation_11 0 0 -1 0.5200000000561252
+  hidden rotation_13 0.7068252250609606 0.7073882252402294 3.0001882242234513e-06 3.1415980003748363
+  hidden rotation_15 0 0 -1 0.5200000000562046
+  hidden rotation_18 0 0 -1 0.5199999995998101
   translation 0 0.76 -1.09321e-08
   controller "ur5_main_controller"
+  toolSlot [
+    GPS {
+      accuracy 0.01
+      noiseCorrelation 0.02
+      resolution 0.01
+    }
+    Robotiq3fGripper {
+      name "gripper"
+    }
+  ]
 }
 Table {
   translation 0 0 0.3
