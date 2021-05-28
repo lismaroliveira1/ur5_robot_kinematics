@@ -50,6 +50,7 @@ dhParameters = [
             ];
 
 tMatrixArray = {};
+tMatrix0_6 = eye(4);
 
 for i = 1:6
 
@@ -65,4 +66,5 @@ for i = 1:6
             0 0 0 1;
             ];
     tMatrixArray{i} = tMatrix;
+    tMatrix0_6 = tMatrix0_6 * tMatrix;
 end
