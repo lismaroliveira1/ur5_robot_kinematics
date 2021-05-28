@@ -37,11 +37,21 @@ dhParameters = [
             theta6 a6 distance6 alpha6;
             ];
 
-tMatrixArray = []
+tMatrixArray = [rand(4, 4) rand(4, 4) rand(4, 4) rand(4, 4) rand(4, 4) rand(4, 4)];
 
 for i = 1:6
 
- dhParameters 
+    theta = dhParameters(i, 1);
+    a = dhParameters(i, 2);
+    alpha = dhParameters(i, 3);
+    distance = dhParameters(i, 4);
 
-   
+    tMatrix = [
+            cos(theta) -sin(theta) 0 a;
+            sin(theta) * cos(alpha) cos(theta) * cos(alpha) -sin(alpha) -sin(alpha) * distance;
+            sin(theta) * sin(alpha) cos(theta) * sin(alpha) cos(alpha) cos(alpha) * distance;
+            0 0 0 1;
+            ];
+    tMatrixArray(1)
+
 end

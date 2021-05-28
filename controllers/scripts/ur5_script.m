@@ -1,5 +1,17 @@
-% ur5 equations
-%UR5 DH paramenters from https://www.universal-robots.com/articles/ur/application-installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/
+%{
+
+ur5 equations
+UR5 DH paramenters from https: // www.universal - robots.com / articles / ur / application - installation / dh - parameters - for - calculations - of - kinematics - and - dynamics /
+UR5e
+Kinematics | theta [rad] | a [m] | d [m] | alpha [rad] | Dynamics | Mass [kg] | Center of Mass [m]
+Joint 1 | 0 | 0 | 0.1625 | π / 2 | Link 1 | 3.761 | [0, -0.02561, 0.00193]
+Joint 2 | 0 |- 0.425 | 0 | 0 | Link 2 | 8.058 | [0.2125, 0, 0.11336]
+Joint 3 | 0 | -0.3922 | 0 | 0 | Link 3 | 2.846 | [0.15, 0.0, 0.0265]
+Joint 4 | 0 | 0 | 0.1333 | π / 2 | Link 4 | 1.37 | [0, -0.0018, 0.01634]
+Joint 5 | 0 | 0 | 0.0997 |- π / 2 | Link 5 | 1.3 | [0, 0.0018, 0.01634]
+Joint 6 | 0 | 0 | 0.0996 | 0 | Link 6 | 0.365 | [0, 0, -0.001159]
+%}
+
 theta1 = 0;
 theta2 = 0;
 theta3 = 0;
@@ -37,7 +49,7 @@ dhParameters = [
             theta6 a6 distance6 alpha6;
             ];
 
-tMatrixArray = []
+tMatrixArray = {};
 
 for i = 1:6
 
@@ -51,6 +63,6 @@ for i = 1:6
             sin(theta) * cos(alpha) cos(theta) * cos(alpha) -sin(alpha) -sin(alpha) * distance;
             sin(theta) * sin(alpha) cos(theta) * sin(alpha) cos(alpha) cos(alpha) * distance;
             0 0 0 1;
-            ]
-
+            ];
+    tMatrixArray{i} = tMatrix;
 end
