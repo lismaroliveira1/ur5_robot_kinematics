@@ -80,12 +80,12 @@ class Ur5Controller(Robot):
         for tMatrix in tMatrixlist:
             self.tMatrix_0_6 *= self.tMatrix_0_6.dot(tMatrix)
 
-        print(self.tMatrix_0_6)
+        print(self.tMatrix_0_1)
 
     def inverseKinematic(self):
         pass
 
     def run(self):
-        while self.step(self.timeStep) != 10:
-            print(self.shoulder_pan_joint_sensor.getValue())
+        while self.step(20) != 10:
+            print('')
         print('stoped')
