@@ -14,11 +14,7 @@ TexturedBackgroundLight {
 Floor {
   size 5 5
 }
-Desk {
-  translation 0 0 -0.93
-}
 UR5e {
-  translation 0 0.76 -1.09321e-08
   controller "ur5_main_controller"
   toolSlot [
     GPS {
@@ -30,10 +26,4 @@ UR5e {
       name "gripper"
     }
   ]
-}
-Table {
-  translation 0 0 0.3
-}
-Glass {
-  translation 0 0.71 -0.92
 }

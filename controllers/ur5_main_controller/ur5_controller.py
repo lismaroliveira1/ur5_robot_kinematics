@@ -11,15 +11,18 @@ class Ur5Controller(Robot):
         self.ur5 = ur5
 
     def initUr5(self):
+        # Instantiating the motors class for every UR5 joint
         self.elbow_joint = self.getDevice('elbow_joint')
         self.shoulder_lift_joint = self.getDevice('shoulder_lift_joint')
         self.shoulder_pan_joint = self.getDevice('shoulder_pan_joint')
         self.wrist_1_joint = self.getDevice('wrist_1_joint')
         self.wrist_2_joint = self.getDevice('wrist_2_joint')
         self.wrist_3_joint = self.getDevice('wrist_3_joint')
-        self.gps = self.getDevice('gps')
-        self.gps.enable(10)
 
+        # Instantiating the GPS class (This GPS are located in the grimper's UR5)
+        self.gps = self.getDevice('gps')
+
+        # Instantiating the PositionSensor class for every UR5 joint
         self.elbow_joint_sensor = self.getDevice('elbow_joint_sensor')
         self.shoulder_lift_joint_sensor = self.getDevice(
             'shoulder_lift_joint_sensor')
@@ -29,6 +32,15 @@ class Ur5Controller(Robot):
         self.wrist_2_joint_sensor = self.getDevice('wrist_2_joint_sensor')
         self.wrist_3_joint_sensor = self.getDevice('wrist_3_joint_sensor')
 
+        # Activating the sensors
+        self.elbow_joint_sensor.enable(10)
+        self.shoulder_lift_joint_sensor.enable(10)
+        self.shoulder_pan_joint_sensor.enable(10)
+        self.wrist_1_joint_sensor.enable(10)
+        self.wrist_2_joint_sensor.enable(10)
+        self.wrist_3_joint_sensor.enable(10)
+
+        # Initial postion all theta joints is equal zero
         self.elbow_joint.setPosition(0)
         self.shoulder_lift_joint.setPosition(0)
         self.shoulder_pan_joint.setPosition(0)
@@ -36,56 +48,86 @@ class Ur5Controller(Robot):
         self.wrist_2_joint.setPosition(0)
         self.wrist_3_joint.setPosition(0)
 
-        self.elbow_joint_sensor.enable(10)
-        self.shoulder_lift_joint_sensor.enable(10)
-        self.shoulder_pan_joint_sensor.enable(10)
-        self.wrist_1_joint_sensor.enable(10)
-        self.wrist_2_joint_sensor.enable(10)
-        self.wrist_3_joint_sensor.enable(10)
-        self.step(20)
-        sleep(2)
-        print(self.gps.getValues())
+    def forwardKinematic(self, theta1, theta2, theta3, theta4, theta5, theta6):
+        dh = [
+            {
+                "alpha": 0,
+                "a": 0,
+                "distance": self.ur5.joint1.distance,
+                "theta": theta1,
+            },
+            {
+                "alpha": math.pi / 2,
+                "a": 0,
+                "distance": 0,
+                "theta": theta2,
+            },
+            {
+                "alpha": 0,
+                "a": self.ur5.joint2.a,
+                "distance": 0,
+                "theta": theta3,
+            },
+            {
+                "alpha": 0,
+                "a": self.ur5.joint3.a,
+                "distance": self.ur5.joint4.distance,
+                "theta": theta4,
+            },
+            {
+                "alpha": math.pi / 2,
+                "a": 0,
+                "distance": self.ur5.joint5.distance,
+                "theta": theta5,
+            },
+            {
+                "alpha": -math.pi / 2,
+                "a": 0,
+                "distance": self.ur5.joint6.distance,
+                "theta": theta6,
+            },
+        ]
+        tmatrix_list = []
+        self.gps.enable(100)
+        self.shoulder_pan_joint.setPosition(theta1)
+        self.shoulder_lift_joint.setPosition(theta2)
+        self.elbow_joint.setPosition(theta3)
+        self.wrist_1_joint.setPosition(theta4)
+        self.wrist_2_joint.setPosition(theta5)
+        self.wrist_3_joint.setPosition(theta6)
 
-    def forwardKinematic(self):
-        ur5Joints = self.ur5.updateJointsPositions(
-            self.shoulder_pan_joint_sensor.getValue(),
-            self.wrist_1_joint_sensor.getValue(),
-            self.elbow_joint_sensor.getValue(),
-            self.shoulder_lift_joint_sensor.getValue(),
-            self.wrist_2_joint_sensor.getValue(),
-            self.wrist_3_joint_sensor.getValue(),
-        )
+        tMatrix0_6 = np.identity(4)
+        for joint in dh:
+            tMatrix = np.array([
+                [np.cos(joint['theta']),
+                 -np.sin(0),
+                 0,
+                 joint['a'], ],
 
-        tMatrixlist = []
+                [np.sin(joint['theta'])*np.cos(joint['alpha']),
+                 np.cos(joint['theta'])*np.cos(joint['alpha']),
+                 - np.sin(joint['alpha']),
+                 - np.sin(joint['alpha'])*joint['distance'], ],
 
-        for joint in ur5Joints:
-            tMatrix = [
-                [math.cos(joint.theta), -math.sin(joint.theta), 0, joint.a],
-                [math.sin(joint.theta)*math.cos(joint.alpha), math.cos(joint.theta) *
-                 math.cos(joint.alpha), -math.sin(joint.alpha), -math.sin(joint.alpha)*joint.distance],
-                [math.sin(joint.theta)*math.sin(joint.alpha),
-                 math.cos(joint.theta)*math.sin(joint.alpha), math.cos(joint.alpha), math.cos(joint.alpha)*joint.distance], [0, 0, 0, 1]
+                [math.sin(joint['theta'])*math.sin(joint['alpha']),
+                 math.cos(joint['theta'])*math.sin(joint['alpha']),
+                 math.cos(joint['alpha']),
+                 math.cos(joint['alpha'])*joint['distance'], ],
+
+                [0, 0, 0, 1],
             ]
-            tMatrixlist.append(np.array(tMatrix))
-
-        self.tMatrix_0_1 = tMatrixlist[0]
-        self.tMatrix_1_2 = tMatrixlist[1]
-        self.tMatrix_2_3 = tMatrixlist[2]
-        self.tMatrix_3_4 = tMatrixlist[3]
-        self.tMatrix_4_5 = tMatrixlist[4]
-        self.tMatrix_5_6 = tMatrixlist[5]
-
-        self.tMatrix_0_6 = tMatrixlist[0]
-        tMatrixlist.remove(tMatrixlist[0])
-        for tMatrix in tMatrixlist:
-            self.tMatrix_0_6 *= self.tMatrix_0_6.dot(tMatrix)
-
-        print(self.tMatrix_0_1)
+            )
+            print(tMatrix)
+            tMatrix0_6 = np.dot(tMatrix0_6, tMatrix)
+        print(tMatrix0_6)
+        self.step(200)
+        print(self.gps.getValues())
 
     def inverseKinematic(self):
         pass
 
     def run(self):
         while self.step(20) != 10:
-            print('')
+            print('**')
+
         print('stoped')

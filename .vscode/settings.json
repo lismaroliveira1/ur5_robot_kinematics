@@ -1,6 +1,6 @@
 {
-    "python.analysis.extraPaths": [
+    "python.extraPaths": [
         "./controllers/ur5_main_controller",
-        "/Applications/Webots.app/lib/controller/python27"
     ],
+    "python.pythonPath": "/usr/local/bin/python3",
 }

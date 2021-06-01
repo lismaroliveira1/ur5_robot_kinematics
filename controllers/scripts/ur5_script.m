@@ -20,18 +20,18 @@ theta5 = 0;
 theta6 = 0;
 
 a1 = 0;
-a2 = -0.425;
-a3 = -0.3922;
-a4 = 0;
+a2 = 0;
+a3 = -0.425;
+a4 = -0.3922;
 a5 = 0;
 a6 = 0;
 
-alpha1 = pi / 2;
-alpha2 = 0;
+alpha1 = 0;
+alpha2 = pi / 2;
 alpha3 = 0;
-alpha4 = pi / 2;
-alpha5 = -(pi / 2);
-alpha6 = 0;
+alpha4 = 0;
+alpha5 = (pi / 2);
+alpha6 = -(pi / 2);
 
 distance1 = 0.1625;
 distance2 = 0;
@@ -50,21 +50,22 @@ dhParameters = [
             ];
 
 tMatrixArray = {};
-tMatrix0_6 = eye(4);
 
 for i = 1:6
 
     theta = dhParameters(i, 1);
     a = dhParameters(i, 2);
-    alpha = dhParameters(i, 3);
-    distance = dhParameters(i, 4);
+    distance = dhParameters(i, 3);
+    alpha = dhParameters(i, 4);
 
     tMatrix = [
             cos(theta) -sin(theta) 0 a;
             sin(theta) * cos(alpha) cos(theta) * cos(alpha) -sin(alpha) -sin(alpha) * distance;
             sin(theta) * sin(alpha) cos(theta) * sin(alpha) cos(alpha) cos(alpha) * distance;
             0 0 0 1;
-            ];
+            ]
     tMatrixArray{i} = tMatrix;
-    tMatrix0_6 = tMatrix0_6 * tMatrix;
+
 end
+
+tMatrix0_6 = tMatrixArray{1} * tMatrixArray{2} * tMatrixArray{3} * tMatrixArray{4} * tMatrixArray{5} * tMatrixArray{6}
