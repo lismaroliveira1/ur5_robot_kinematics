@@ -49,7 +49,7 @@ class Ur5Controller(Robot):
         self.wrist_3_joint.setPosition(0)
 
     def forwardKinematic(self, theta1, theta2, theta3, theta4, theta5, theta6):
-        dh = [
+        self.dh = [
             {
                 "alpha": 0,
                 "a": 0,
@@ -97,7 +97,7 @@ class Ur5Controller(Robot):
         self.wrist_3_joint.setPosition(theta6)
 
         tMatrix0_6 = np.identity(4)
-        for joint in dh:
+        for joint in self.dh:
             tMatrix = np.array([
                 [np.cos(joint['theta']),
                  -np.sin(0),
@@ -123,11 +123,22 @@ class Ur5Controller(Robot):
         self.step(200)
         print(self.gps.getValues())
 
-    def inverseKinematic(self):
-        pass
+    def inverseKinematic(self, point):
+        xob = point[0]
+        yob = point[1]
+        zob = point[2]
+        r = yob / xob
+        b = 2 * xob
+        c = yob ** 2 - 0.15 + ((xob - 1) / yob) ** 2
+        x = (-b - (4 * c) ** 1 / 2) / 2
+        y = x * r
+        theta1 = np.arctan2(
+            y, x) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2)
+        print((xob * np.sin(theta1) -
+               yob * np.cos(theta1) -
+               self.dh[3]['distance'])
+              / self.dh[5]['distance'])
 
     def run(self):
         while self.step(20) != 10:
             print('**')
-
-        print('stoped')

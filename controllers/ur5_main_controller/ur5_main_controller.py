@@ -42,11 +42,11 @@ joint6 = Joint(0, 0, 0.0996, 0, 0.365, [0, 0, -0.001159])
 
 ur5 = UR5e(joint1, joint2, joint3, joint4, joint5, joint6)
 
-
 controller = Ur5Controller(ur5)
 
 if __name__ == '__main__':
     controller.initUr5()
     controller.forwardKinematic(
-        math.pi/2, -math.pi/2, -math.pi/4, math.pi/2, -math.pi/4, -math.pi/2)
+        math.pi / 2, -math.pi / 2, -math.pi / 4, math.pi / 2, -math.pi / 4, -math.pi / 2)
+    controller.inverseKinematic([1.5, 2.5, -1.5])
     # controller.inverseKinematic()

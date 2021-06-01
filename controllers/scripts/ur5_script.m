@@ -48,11 +48,18 @@ dhParameters = [
             theta5 a5 distance5 alpha5;
             theta6 a6 distance6 alpha6;
             ];
+ur5DH = [
+    theta1 distance1 a1 alpha1;
+    theta2 distance2 a2 alpha2;
+    theta3 distance3 a3 alpha3;
+    theta4 distance4 a4 alpha4;
+    theta5 distance5 a5 alpha5;
+    theta6 distance6 a6 alpha6;
+    ];
 
 tMatrixArray = {};
 
 for i = 1:6
-
     theta = dhParameters(i, 1);
     a = dhParameters(i, 2);
     distance = dhParameters(i, 3);
@@ -69,3 +76,4 @@ for i = 1:6
 end
 
 tMatrix0_6 = tMatrixArray{1} * tMatrixArray{2} * tMatrixArray{3} * tMatrixArray{4} * tMatrixArray{5} * tMatrixArray{6}
+ur5Model = SerialLink(ur5DH)
