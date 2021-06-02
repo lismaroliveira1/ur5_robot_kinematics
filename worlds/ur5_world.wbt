@@ -4,8 +4,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.13973416444818682 0.9482828325451711 0.2850158465525635 3.9907007411233026
-  position -4.365956925903198 4.674960830142783 -4.329856524873749
+  orientation 0.8320296901608617 -0.5472727630792455 -0.09065934856609531 5.975848817126648
+  position 1.5230158406475818 1.1864778438424872 3.1106798575558683
 }
 TexturedBackground {
 }
@@ -13,6 +13,9 @@ TexturedBackgroundLight {
 }
 Floor {
   size 5 5
+}
+Glass {
+  translation 0.64 0.6 0.05
 }
 UR5e {
   controller "ur5_main_controller"

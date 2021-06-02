@@ -117,27 +117,37 @@ class Ur5Controller(Robot):
                 [0, 0, 0, 1],
             ]
             )
-            print(tMatrix)
+            """ print(tMatrix)
             tMatrix0_6 = np.dot(tMatrix0_6, tMatrix)
         print(tMatrix0_6)
         self.step(200)
-        print(self.gps.getValues())
+        print(self.gps.getValues()) """
 
     def inverseKinematic(self, point):
-        xob = point[0]
-        yob = point[1]
-        zob = point[2]
-        r = yob / xob
-        b = 2 * xob
-        c = yob ** 2 - 0.15 + ((xob - 1) / yob) ** 2
-        x = (-b - (4 * c) ** 1 / 2) / 2
-        y = x * r
+        x = point[0]
+        y = point[1]
+        z = point[2]
+
+        r = 0.30
+        a = (1 + y/x)
+        b = (-2 * x - 2 * (y ** 2) / x)
+        c = (x ** 2 + y ** 2 - r ** 2)
+
+        delta = b ** 2 - 4 * a * c
+        bestPoint_x = (-b - delta ** 1 / 2) / (2 * a)
+        bestPoint_y = y / x * bestPoint_x
+        bestPoint_z = z
+        print([x, y, z])
+        print([bestPoint_x, bestPoint_y, bestPoint_z])
         theta1 = np.arctan2(
-            y, x) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2)
-        print((xob * np.sin(theta1) -
-               yob * np.cos(theta1) -
-               self.dh[3]['distance'])
-              / self.dh[5]['distance'])
+            bestPoint_y, bestPoint_x) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + math.pi / 2
+        print(theta1)
+        """ print(theta1)
+        print(self.dh[5]['distance'])
+        print(np.arccos((xob * np.sin(theta1) -
+                         yob * np.cos(theta1) -
+                         self.dh[3]['distance'])
+              / self.dh[5]['distance'])) """
 
     def run(self):
         while self.step(20) != 10:
