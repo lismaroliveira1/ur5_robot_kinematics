@@ -48,5 +48,6 @@ if __name__ == '__main__':
     controller.initUr5()
     controller.forwardKinematic(
         math.pi / 2, -math.pi / 2, -math.pi / 4, math.pi / 2, -math.pi / 4, -math.pi / 2)
-    controller.inverseKinematic([0.64, 0.6, 0.05])
+    controller.inverseKinematic(
+        [0.64, 0.6, 0.05], [1.15, math.pi, 20*math.pi/180])
     # controller.inverseKinematic()

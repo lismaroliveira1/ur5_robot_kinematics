@@ -1,7 +1,9 @@
-import math
+
 import numpy as np
 from controller import Robot
 from time import sleep
+
+pi = np.pi
 
 
 class Ur5Controller(Robot):
@@ -57,7 +59,7 @@ class Ur5Controller(Robot):
                 "theta": theta1,
             },
             {
-                "alpha": math.pi / 2,
+                "alpha": pi / 2,
                 "a": 0,
                 "distance": 0,
                 "theta": theta2,
@@ -75,13 +77,13 @@ class Ur5Controller(Robot):
                 "theta": theta4,
             },
             {
-                "alpha": math.pi / 2,
+                "alpha": pi / 2,
                 "a": 0,
                 "distance": self.ur5.joint5.distance,
                 "theta": theta5,
             },
             {
-                "alpha": -math.pi / 2,
+                "alpha": -pi / 2,
                 "a": 0,
                 "distance": self.ur5.joint6.distance,
                 "theta": theta6,
@@ -109,10 +111,10 @@ class Ur5Controller(Robot):
                  - np.sin(joint['alpha']),
                  - np.sin(joint['alpha'])*joint['distance'], ],
 
-                [math.sin(joint['theta'])*math.sin(joint['alpha']),
-                 math.cos(joint['theta'])*math.sin(joint['alpha']),
-                 math.cos(joint['alpha']),
-                 math.cos(joint['alpha'])*joint['distance'], ],
+                [np.sin(joint['theta'])*np.sin(joint['alpha']),
+                 np.cos(joint['theta'])*np.sin(joint['alpha']),
+                 np.cos(joint['alpha']),
+                 np.cos(joint['alpha'])*joint['distance'], ],
 
                 [0, 0, 0, 1],
             ]
@@ -123,7 +125,7 @@ class Ur5Controller(Robot):
         self.step(200)
         print(self.gps.getValues()) """
 
-    def inverseKinematic(self, point):
+    def inverseKinematic(self, point, rpy):
         x = point[0]
         y = point[1]
         z = point[2]
@@ -140,15 +142,32 @@ class Ur5Controller(Robot):
         print([x, y, z])
         print([bestPoint_x, bestPoint_y, bestPoint_z])
         theta1 = np.arctan2(
-            bestPoint_y, bestPoint_x) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + math.pi / 2
-        print(theta1)
-        """ print(theta1)
-        print(self.dh[5]['distance'])
-        print(np.arccos((xob * np.sin(theta1) -
-                         yob * np.cos(theta1) -
-                         self.dh[3]['distance'])
-              / self.dh[5]['distance'])) """
+            bestPoint_y, bestPoint_x) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + pi / 2
+        if theta1 > pi:
+            theta1 = np.arctan2(
+                bestPoint_y, bestPoint_x) - np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + pi / 2
+        theta5 = np.arccos((x * np.sin(theta1) -
+                            y * np.cos(theta1) -
+                            self.dh[3]['distance'])
+                           / self.dh[5]['distance'])
+        roll = rpy[0]
+        pitch = rpy[1]
+        yall = rpy[2]
 
-    def run(self):
-        while self.step(20) != 10:
-            print('**')
+        rpyMatrix = np.array([
+            [np.cos(roll) * np.cos(yall) * np.cos(pitch) - np.sin(roll)*np.sin(yall),
+             - np.cos(roll)*np.sin(yall)*np.cos(pitch) -
+             np.sin(roll)*np.cos(yall),
+             np.cos(roll)*np.sin(pitch), x],
+
+            [np.sin(roll) * np.cos(yall) * np.cos(pitch) + np.cos(roll)*np.sin(yall),
+             - np.sin(roll)*np.sin(yall)*np.cos(pitch) +
+             np.cos(roll)*np.cos(yall),
+             np.sin(roll)*np.sin(pitch), y],
+
+            [-np.cos(roll) * np.sin(yall),
+             np.sin(yall)*np.sin(pitch),
+             np.cos(yall), z],
+            [0, 0, 0, 1]
+        ])
+        print(rpyMatrix)

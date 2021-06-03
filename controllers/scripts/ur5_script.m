@@ -4,6 +4,7 @@ ur5 equations
 UR5 DH paramenters from https: // www.universal - robots.com / articles / ur / application - installation / dh - parameters - for - calculations - of - kinematics - and - dynamics /
 UR5e
 Kinematics | theta [rad] | a [m] | d [m] | alpha [rad] | Dynamics | Mass [kg] | Center of Mass [m]
+
 Joint 1 | 0 | 0 | 0.1625 | π / 2 | Link 1 | 3.761 | [0, -0.02561, 0.00193]
 Joint 2 | 0 |- 0.425 | 0 | 0 | Link 2 | 8.058 | [0.2125, 0, 0.11336]
 Joint 3 | 0 | -0.3922 | 0 | 0 | Link 3 | 2.846 | [0.15, 0.0, 0.0265]
@@ -77,3 +78,5 @@ end
 
 tMatrix0_6 = tMatrixArray{1} * tMatrixArray{2} * tMatrixArray{3} * tMatrixArray{4} * tMatrixArray{5} * tMatrixArray{6}
 ur5Model = SerialLink(ur5DH)
+ur5Model.teach
+
