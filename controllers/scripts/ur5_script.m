@@ -78,5 +78,5 @@ end
 
 tMatrix0_6 = tMatrixArray{1} * tMatrixArray{2} * tMatrixArray{3} * tMatrixArray{4} * tMatrixArray{5} * tMatrixArray{6}
 ur5Model = SerialLink(ur5DH)
-ur5Model.teach
-
+T = transl(1.5, 0.6, 1) * rpy2tr(0, 180, 20, 'deg')
+q = ur5Model.ikine(T)
