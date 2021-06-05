@@ -154,7 +154,7 @@ class Ur5Controller(Robot):
         pitch = rpy[1]
         yall = rpy[2]
 
-        rpyMatrix = np.array([
+        tMatrix = np.array([
             [np.cos(roll) * np.cos(yall) * np.cos(pitch) - np.sin(roll)*np.sin(yall),
              - np.cos(roll)*np.sin(yall)*np.cos(pitch) -
              np.sin(roll)*np.cos(yall),
