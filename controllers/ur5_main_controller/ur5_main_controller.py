@@ -49,5 +49,5 @@ if __name__ == '__main__':
     controller.forwardKinematic(
         math.pi / 2, -math.pi / 2, -math.pi / 4, math.pi / 2, -math.pi / 4, -math.pi / 2)
     controller.inverseKinematic(
-        [1.5, 0.8, 0], [0.64, 0, 0])
+        [0.64, 0, 0], [0, math.pi, 0])
     # controller.inverseKinematic()

@@ -109,25 +109,6 @@ class Ur5Controller(Robot):
         y = point[1]
         z = point[2]
 
-        r = 0.30
-        a = (1 + y/x)
-        b = (-2 * x - 2 * (y ** 2) / x)
-        c = (x ** 2 + y ** 2 - r ** 2)
-
-        delta = b ** 2 - 4 * a * c
-        bestPoint_x = (-b - delta ** 1 / 2) / (2 * a)
-        bestPoint_y = y / x * bestPoint_x
-        bestPoint_z = z
-        theta1 = np.arctan2(
-            bestPoint_y, bestPoint_x) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + pi / 2
-        if theta1 > pi:
-            theta1 = np.arctan2(
-                bestPoint_y, bestPoint_x) - np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + pi / 2
-        self.shoulder_pan_joint.setPosition(theta1)
-        theta5 = np.arccos((x * np.sin(theta1) -
-                            y * np.cos(theta1) -
-                            self.dh[3]['distance'])
-                           / self.dh[5]['distance'])
         roll = rpy[0]
         pitch = rpy[1]
         yall = rpy[2]
@@ -148,16 +129,24 @@ class Ur5Controller(Robot):
              np.cos(yall), z],
             [0, 0, 0, 1]
         ])
+        p0_6 = np.dot(tMatrix, np.array(
+            [[0], [0], [-self.ur5.joint6.distance], [1]]))
+        theta1 = np.arctan2(
+            p0_6[1][0], p0_6[0][0]) + np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + pi / 2
+        theta5 = np.arccos((x * np.sin(theta1) -
+                            y * np.cos(theta1) -
+                            self.dh[3]['distance'])
+                           / self.dh[5]['distance'])
 
         xoY = tMatrix[0][1]
         yoY = tMatrix[1][1]
         xoX = tMatrix[0][0]
         yoX = tMatrix[1][0]
-        p0_6 = np.dot(tMatrix, np.array(
-            [[0], [0], [-self.ur5.joint6.distance], [1]]))
+
         theta6 = np.arctan2(
             (-xoY*np.sin(theta1) + yoY*np.cos(theta1)) / np.sin(theta5),
             (xoX*np.cos(theta1) - yoY*np.cos(theta1)) / np.sin(theta5))
+
         tMatrix0_1 = self.generateTMatrix(
             theta1, self.dh[0]['distance'], self.dh[0]['a'], self.dh[0]['alpha'])
         tMatrix4_5 = self.generateTMatrix(
@@ -166,20 +155,57 @@ class Ur5Controller(Robot):
             theta1, self.dh[5]['distance'], self.dh[5]['a'], self.dh[5]['alpha'])
         tMatrix0_5 = np.dot(tMatrix, np.linalg.inv(tMatrix5_6))
         tMatrix0_4 = np.dot(tMatrix0_5, np.linalg.inv(tMatrix4_5))
-        tMatrix1_4 = np.dot(np.linalg.inv(tMatrix0_1), tMatrix0_4)
+        tMatrix1_4 = np.dot(tMatrix0_4, np.linalg.inv(tMatrix0_1))
+        print(tMatrix1_4)
         p1_4XZ = tMatrix1_4[0][3] ** 2 + tMatrix1_4[2][3] ** 2
         a2 = self.ur5.joint2.a
         a3 = self.ur5.joint3.a
         theta3 = np.arccos((p1_4XZ - a2 ** 2 - a3 ** 2) / (2 * a2 * a3))
+
+        theta3 = np.arccos((p1_4XZ - a2 ** 2 - a3 ** 2) / (2 * a2 * a3))
+
         theta2 = np.arctan2(
             tMatrix1_4[2][3], tMatrix1_4[0][3]) - np.arcsin(-a3*np.sin(theta3) / (p1_4XZ ** 1 / 2))
+        print(-theta2)
+
+        tMatrix3_4 = self.generateTMatrix(
+            theta4, self.dh[3]['distance'], self.dh[3]['a'], self.dh[3]['alpha'])
+        theta4 = np.arctan2(tMatrix3_4[0][1], tMatrix3_4[0][0])
+        self.shoulder_pan_joint.setPosition(theta1)
+        self.shoulder_lift_joint.setPosition(theta2)
+        self.elbow_joint.setPosition(theta3)
+        self.wrist_1_joint.setPosition(theta4)
+        self.wrist_2_joint.setPosition(theta5)
+        self.wrist_3_joint.setPosition(theta6)
+
+        """ 
         tMatrix1_2 = self.generateTMatrix(
             theta2, self.dh[1]['distance'], self.dh[1]['a'], self.dh[1]['alpha'])
         tMatrix2_3 = self.generateTMatrix(
             theta3, self.dh[2]['distance'], self.dh[2]['a'], self.dh[2]['alpha'])
         tMatrix2_4 = np.dot(tMatrix1_2, np.linalg.inv(tMatrix1_4))
         tMatrix3_4 = np.dot(tMatrix2_3, np.linalg.inv(tMatrix2_4))
-        theta4 = np.arctan2(tMatrix3_4[0][1], tMatrix3_4[0][0])
+         """
+
+        """ r = 0.30
+        a = (1 + y/x)
+        b = (-2 * x - 2 * (y ** 2) / x)
+        c = (x ** 2 + y ** 2 - r ** 2)
+
+        delta = b ** 2 - 4 * a * c
+        bestPoint_x = (-b - delta ** 1 / 2) / (2 * a)
+        bestPoint_y = y / x * bestPoint_x
+        bestPoint_z = z
+        
+        if theta1 > pi:
+            theta1 = np.arctan2(
+                bestPoint_y, bestPoint_x) - np.arccos(self.dh[3]['distance'] / (x ** 2 + y ** 2) ** 1 / 2) + pi / 2
+        
+        
+        
+
+        
+         """
 
     def generateTMatrix(self, theta, distance, a, alpha):
         return np.array(
