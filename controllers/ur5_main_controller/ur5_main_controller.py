@@ -2,9 +2,11 @@
 from joint import Joint
 from ur5e import UR5e
 from ur5_controller import Ur5Controller
+import time
 
 import math
 
+pi = math.pi
 
 #######   main   ######
 
@@ -32,12 +34,12 @@ UR5 DH Table
 
  """
 
-joint1 = Joint(0, 0, 0.1625, math.pi/2, 3.761, [[0, -0.02561, 0.00193]])
-joint2 = Joint(0, -0.425, 0, 0, 8.058, [0.2125, 0, 0.11336])
-joint3 = Joint(0, -0.3922, 0, 0, 2.846, [0.15, 0.0, 0.0265])
-joint4 = Joint(0, 0, 0.1333, math.pi/2, 1.37, [0, 0, 0.01])
-joint5 = Joint(0, 0, 0.0997, -math.pi/2, 1.3, [0, 0, 0.01])
-joint6 = Joint(0, 0, 0.0996, 0, 0.365, [0, 0, -0.001159])
+joint1 = Joint(pi, 0, 0.1625, pi/2, 3.761, [[0, -0.02561, 0.00193]])
+joint2 = Joint(pi, -0.425, 0, 0, 8.058, [0.2125, 0, 0.11336])
+joint3 = Joint(pi, -0.3922, 0, 0, 2.846, [0.15, 0.0, 0.0265])
+joint4 = Joint(pi, 0, 0.1333, pi/2, 1.37, [0, 0, 0.01])
+joint5 = Joint(pi, 0, 0.0997, -pi/2, 1.3, [0, 0, 0.01])
+joint6 = Joint(pi, 0, 0.0996, 0, 0.365, [0, 0, -0.001159])
 
 
 ur5 = UR5e(joint1, joint2, joint3, joint4, joint5, joint6)
@@ -46,8 +48,4 @@ controller = Ur5Controller(ur5)
 
 if __name__ == '__main__':
     controller.initUr5()
-    controller.forwardKinematic(
-        math.pi / 2, -math.pi / 2, -math.pi / 4, math.pi / 2, -math.pi / 4, -math.pi / 2)
-    controller.inverseKinematic(
-        [0.64, 0, 0], [0, math.pi, 0])
-    # controller.inverseKinematic()
+    controller.invKinematic(0.64, 0.4, 0.05)

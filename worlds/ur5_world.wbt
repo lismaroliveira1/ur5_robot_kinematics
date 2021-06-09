@@ -15,9 +15,11 @@ Floor {
   size 5 5
 }
 Glass {
-  translation 0.64 0.6 0.05
+  translation 0.64 0.02 0.05
 }
 UR5e {
+  hidden rotation_17 0 0 -1 9.884312124119402e-08
+  hidden rotation_18 0 0 -1 0.5199999996091306
   controller "ur5_main_controller"
   toolSlot [
     GPS {

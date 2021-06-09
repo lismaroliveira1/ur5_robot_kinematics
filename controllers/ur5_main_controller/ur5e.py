@@ -17,6 +17,3 @@ class UR5e:
         self.joint4.theta = theta4
         self.joint5.theta = theta5
         self.joint6.theta = theta6
-        joints = [self.joint1, self.joint2, self.joint3,
-                  self.joint4, self.joint5, self.joint6]
-        return joints
