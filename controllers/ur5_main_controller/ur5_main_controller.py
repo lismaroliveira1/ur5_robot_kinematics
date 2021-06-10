@@ -12,7 +12,6 @@ pi = math.pi
 
 
 """ 
-
 UR5 DH Paramaters
 Kinematic | theta |   a[m]   |   d[m] | alpha |         Device       | Mass [kg] |  Center of Mass [kh] 
 Joint 1   |   0   |     0    | 0.1625 |  pi/2 |  Shoulder pan joint  |   3.761   | [0, -0.02561, 0.00193]
@@ -23,7 +22,6 @@ Joint 5   |   0   |     0    | 0.0997 | -pi/2 |    Wrist 2 joint     |   1.3    
 Joint 6   |   0   |     0    | 0.0996 |   0   |    Wrist 3 joint     |   0.365   |   [0, 0, -0.001159]
 
 UR5 DH Table
-
   i |   alpha(i-1)    |   a(i-1) |   d(i) | theta(i)    
   1 |        0        |     0    | 0.1625 | theta(1)
   2 |       pi/2      |     0    |   0    | theta(2)
@@ -31,7 +29,6 @@ UR5 DH Table
   4 |        0        |  -0.3922 | 0.1333 | theta(4)
   5 |      pi/2       |     0    | 0.0997 | theta(5)
   6 |     -pi/2       |     0    | 0.0996 | theta(6)
-
  """
 
 joint1 = Joint(pi, 0, 0.1625, pi/2, 3.761, [[0, -0.02561, 0.00193]])
