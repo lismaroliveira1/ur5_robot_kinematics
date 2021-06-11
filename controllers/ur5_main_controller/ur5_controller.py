@@ -9,7 +9,7 @@ pi = np.pi
 class Ur5Controller(Robot):
     def __init__(self, ur5):
         super(Ur5Controller, self).__init__()
-        self.timeStep = 50
+        self.timeStep = 20
         self.ur5 = ur5
 
     def initUr5(self):
@@ -43,9 +43,9 @@ class Ur5Controller(Robot):
         self.wrist_3_joint_sensor.enable(10)
 
         # Initial postion all theta joints is equal zero
-        self.step(100)
+        self.step(10)
         self.elbow_joint.setPosition(0)
-        self.shoulder_lift_joint.setPosition(-pi/2)
+        self.shoulder_lift_joint.setPosition(0)
         self.shoulder_pan_joint.setPosition(0)
         self.wrist_1_joint.setPosition(0)
         self.wrist_2_joint.setPosition(0)
@@ -108,7 +108,7 @@ class Ur5Controller(Robot):
         dh = self.dhParams()
         tMatrix0_6 = np.identity(4)
         for joint in dh:
-            tMatrix = generateTMatrix(
+            tMatrix = self.generateTMatrix(
                 joint['theta'], joint['distance'], joint['a'], joint['alpha'])
             tMatrix0_6 = np.dot(tMatrix0_6, tMatrix)
         return tMatrix0_6
@@ -116,12 +116,12 @@ class Ur5Controller(Robot):
     def invKinematic(self,x, y, z):
         results = []
         dh = self.dhParams()
-        rotation = np.array([[0, -1, 0],[0 , 0,-1],[-1, 0,0]])
-        tMatrix = np.vstack((np.hstack((rotation, [[x],[y], [z]])), [0,0,0,1]))
+        rotation = np.array([[0, 1, 0],[0 , 1,1],[1, 0,0]])
+        tMatrix = np.vstack((np.hstack((rotation, [[x],[y], [z]]))))
         p0_5 = np.dot(tMatrix, np.array([[0], [0], [-self.ur5.joint6.distance], [1]]))
         p0_5x = p0_5[0][0]
         p0_5y = p0_5[1][0]
-        theta1 = np.arctan2(p0_5y, p0_5x) + np.arccos(dh[3]['distance'] / ((p0_5x ** 2 + p0_5y ** 2) ** (1 / 2))) + pi / 2
+        theta1 = np.arctan2(p0_5y, p0_5x) - np.arccos(dh[3]['distance'] / ((p0_5x ** 2 + p0_5y ** 2) ** (1 / 2))) + pi / 2
         p0_6x = tMatrix[0][3]
         p0_6y = tMatrix[1][3]
         theta5  = np.arccos((p0_6x * np.sin(theta1) - p0_6y * np.cos(theta1) -  dh[3]['distance']) / dh[5]['distance'])
@@ -139,8 +139,8 @@ class Ur5Controller(Robot):
         p1_4x = tMatrix1_4[0][3]
         p1_4z = tMatrix1_4[2][3]
         p1_4XZ = p1_4x ** 2 + p1_4z ** 2
-        a2 = ur5.joint2.a
-        a3 = ur5.joint3.a
+        a2 = self.ur5.joint2.a
+        a3 = self.ur5.joint3.a
         theta3 = np.arccos((p1_4XZ - (a2 ** 2) - (a3 ** 2)) / (2 * a2 * a3))
         theta2 = np.arctan2(-p1_4z, -p1_4x) - np.arcsin((-a3*np.sin(theta3))/(p1_4XZ**0.5))
         tMatrix1_2 = self.generateTMatrix(theta2, dh[1]['distance'], dh[1]['a'], dh[1]['alpha'])
@@ -153,12 +153,11 @@ class Ur5Controller(Robot):
         theta4 = np.arctan2(x3_4y,x3_4x)
         if not np.isnan(theta2):
             tMatrix = self.forwardKinematic(theta1, theta2, theta3, theta4, theta5, theta6)
-            angles = [theta1, theta2, theta3, theta4, theta5, theta6]
-            print(angles)
             print(tMatrix)
+            angles = [theta1, theta2, theta3, theta4, theta5, theta6]
             return angles
         return []
-
+   
     def createCPT(self,angles):
         totalTime = 2
         q0 = 0
@@ -187,8 +186,10 @@ class Ur5Controller(Robot):
                 )
         return resultsTPC
 
-    def createLSPB(self,angles):
+    def createLSPB(self,angles, totalTime):
         resultsLSPB = []
+        q0 = 0
+        times = np.arange(0, totalTime, 0.01)
         for joint in angles:
             qf = joint
             V = 1.5*(qf - q0)/totalTime
@@ -220,7 +221,7 @@ class Ur5Controller(Robot):
                     positions.append(jointPosition)
                     velocitys.append(jointVelocity)
                     accelarations.append(jointAcceleration)
-                resultsLSPB.append(
+            resultsLSPB.append(
                 {
                     'positions': positions,
                     'velocitys': velocitys,
@@ -236,13 +237,39 @@ class Ur5Controller(Robot):
         while self.step(self.timeStep) != -1:
             i = i + 0.1
             self.shoulder_pan_joint.setPosition(i)
-        
+    
+    
+
     def goToThePoint(self, point):
         x = point[0]
         y = point[1]
         z = point[2]
         finalAngles = self.invKinematic(x, y, z)
-        resultsLSPB = self.createLSPB(finalAngles)
-        print(resultsLSPB)
+        resultsLSPB = self.createLSPB(finalAngles, 1)
+        i = 0
+        for result in resultsLSPB:
+            for angle in result['positions']:
+                if i == 0:
+                    self.step(1)
+                    self.shoulder_pan_joint.setPosition(angle)
+                if i == 1:
+                    self.step(1)
+                    self.shoulder_lift_joint.setPosition(angle)
+                if i == 2:
+                    self.step(1)
+                    self.elbow_joint.setPosition(angle)
+                if i == 3:
+                    self.step(1)
+                    self.wrist_1_joint.setPosition(angle)
+                if i == 4:
+                    self.step(1)
+                    self.wrist_2_joint.setPosition(angle)
+                if i == 5:
+                    self.step(1)
+                    self.wrist_3_joint.setPosition(angle)
+            i = i + 1
+                
+               
+       
 
         
