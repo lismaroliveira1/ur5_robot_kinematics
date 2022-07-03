@@ -1,7 +1,11 @@
 {
     "python.extraPaths": [
         "./controllers/ur5_main_controller",
+        "/usr/local/webots/lib/controller/python39/controller",
+        "/usr/local/webots/lib/controller/python39/vehicle",
+        "/usr/local/webots/lib/controller/python38/controller",
+        "/usr/local/webots/lib/controller/python38/vehicle"
     ],
-    "python.pythonPath": "/opt/local/bin/python3.8",
+    "python.pythonPath": "/usr/bin/python3.9",
     "jupyter.jupyterServerType": "local",
 }

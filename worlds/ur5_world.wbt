@@ -1,34 +1,32 @@
-#VRML_SIM R2021a utf8
+#VRML_SIM R2022a utf8
 WorldInfo {
   basicTimeStep 16
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.8320296901608617 -0.5472727630792455 -0.09065934856609531 5.975848817126648
-  position 1.5230158406475818 1.1864778438424872 3.1106798575558683
+  orientation -0.019392696078787082 0.09938076348323525 0.9948604862935733 1.586922915734251
+  position 0.8973951624805069 -9.530688722616595 2.1352789768324896
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
-Floor {
-  size 5 5
+RectangleArena {
+  translation 0.54 0 0
+  floorSize 5 5
 }
 Glass {
-  translation 0.64 0.02 0.05
+  translation 0.76 -0.27 0.78
+  rotation 0 1 0 0
 }
 UR5e {
-  hidden rotation_17 0 0 -1 9.884312124119402e-08
-  hidden rotation_18 0 0 -1 0.5199999996091306
-  controller "ur5_main_controller"
-  toolSlot [
-    GPS {
-      accuracy 0.01
-      noiseCorrelation 0.02
-      resolution 0.01
-    }
-    Robotiq3fGripper {
-      name "gripper"
-    }
-  ]
+  translation 0 0 0.75
+  rotation 0 0 1 4.692820414042842e-06
+  controller "<extern>"
+}
+Table {
+}
+Table {
+  translation 0.99 0 0
+  name "table(1)"
 }

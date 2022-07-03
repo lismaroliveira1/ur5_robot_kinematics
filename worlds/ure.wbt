@@ -1,0 +1,103 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  info [
+    "Universal Robot UR3e, UR5e and UR10e grasping cans using Robotiq 3F grippers."
+  ]
+  title "Universal Robot"
+  basicTimeStep 8
+  physicsDisableAngularThreshold 0.1
+  coordinateSystem "NUE"
+  contactProperties [
+    ContactProperties {
+      bounce 0.1
+    }
+    ContactProperties {
+      material1 "slope"
+      coulombFriction [
+        0.5
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.47230201253112153 -0.11367636696295608 0.8740757933687191 3.5563062632657783
+  position 1.412049127062739 -0.3808665255141556 1.9334654283914476
+  exposure 1.7
+}
+TexturedBackground {
+  texture "factory"
+}
+Floor {
+  size 17 5
+  appearance ThreadMetalPlate {
+  }
+}
+Transform {
+  translation 2.52024 2.10889 0.796
+  rotation 0 0 1 -1.3089953071795861
+}
+SolidBox {
+  translation -0.135 -0.0323 0.305
+  size 1.5 0.4 0.61
+  appearance GalvanizedMetal {
+  }
+}
+UR5e {
+  hidden translation_1 0 0 0.163
+  hidden rotation_1 0 0 -1 3.176989071664293e-06
+  hidden translation_2 0 0.138 0
+  hidden rotation_2 0 1 0 1.5707954444096095
+  hidden translation_3 0 -0.131 0.425
+  hidden rotation_3 0 -1 0 1.5528697335855191e-06
+  hidden translation_4 0 0 0.392
+  hidden rotation_4 0 1 0 1.5707944430594591
+  hidden translation_5 0 0.127 0
+  hidden rotation_5 0 0 0.9999999999999999 7.890583452507145e-07
+  hidden translation_6 0 0 0.1
+  hidden rotation_6 0 -1 0 5.615187788431893e-07
+  hidden translation_8 -0.0455 0.0214 0.036
+  hidden rotation_8 0.7068252250610435 0.7073882252401859 2.9909069803630925e-06 3.1415979817975708
+  hidden translation_9 0.02 0 0
+  hidden rotation_9 0 0 -1 2.9802322387695313e-08
+  hidden translation_10 0.05 -0.028 0
+  hidden translation_11 0.039 0 0
+  hidden translation_12 -0.0455 0.0214 -0.036
+  hidden rotation_12 0.7068252250610435 0.7073882252401859 2.9909063905173064e-06 3.14159798179639
+  hidden translation_13 0.02 0 0
+  hidden rotation_13 0 0 1 0
+  hidden translation_14 0.05 -0.028 0
+  hidden translation_15 0.039 0 0
+  hidden translation_16 0.02 0 0
+  hidden rotation_16 0 0 1 0
+  hidden translation_17 0.05 -0.028 0
+  hidden translation_18 0.039 0 0
+  translation 0 0 0.61
+  rotation 5.67193e-08 2.39745e-09 -1 1.5708
+  controller "<extern>"
+  selfCollision FALSE
+  toolSlot [
+    Robotiq3fGripper {
+      rotation 0 1 0 0
+    }
+    GPS {
+      name "gripper_gps"
+    }
+    DistanceSensor {
+      translation 0 0.1 0
+      rotation 0 0 1 1.570796
+    }
+  ]
+}
+PlasticCrate {
+  translation 0.22 0.67811648 0.25
+  rotation 0 1 0 0
+  size 0.6 0.45 0.4
+  mass 1
+}
+PlasticCrate {
+  translation -1.04 0.67811648 0.26
+  rotation 0 1 0 0
+  name "plastic crate(2)"
+  size 0.6 0.45 0.4
+  mass 1
+}
